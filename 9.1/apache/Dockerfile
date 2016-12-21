@@ -15,6 +15,7 @@ RUN apt-get update && apt-get install -y \
 	nano \
 	net-tools \
 	openssh-server \
+	apache2-util \
 	&& rm -rf /var/lib/apt/lists/*
 
 # https://doc.owncloud.org/server/8.1/admin_manual/installation/source_installation.html#prerequisites
@@ -32,7 +33,11 @@ RUN { \
 		echo 'opcache.fast_shutdown=1'; \
 		echo 'opcache.enable_cli=1'; \
 	} > /usr/local/etc/php/conf.d/opcache-recommended.ini
-RUN a2enmod rewrite
+RUN a2enmod access_compat alias alias auth_basic authn_core authn_file\
+    authz_core authz_host authz_user autoindex autoindex dav dav_fs dav_fs\
+    deflate deflate dir dir env filter headers macro mime mime mpm_prefork \
+    mpm_prefork negotiation negotiation php5 proxy proxy proxy_http proxy_wstunnel\
+    rewrite setenvif setenvif socache_shmcb ssl ssl status status 
 
 # PECL extensions
 RUN set -ex \
@@ -40,7 +45,8 @@ RUN set -ex \
 	&& pecl install memcached-2.2.0 \
 	&& pecl install redis-2.2.8 \
 	&& docker-php-ext-enable apcu memcached redis
-
+RUN which redis-server || apt-get install -y redis-server; \
+	sed --ire "s~^# maxmemory.+~maxmemory2gb~g" /etc/redis/redis.conf
 ENV OWNCLOUD_VERSION 9.1.3
 VOLUME /var/www/html
 
