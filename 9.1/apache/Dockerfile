@@ -13,6 +13,7 @@ RUN apt-get update && apt-get install -y \
 	libpq-dev \
 	libxml2-dev \
 	nano \
+	wget \
 	net-tools \
 	openssh-server \
 	expect \
