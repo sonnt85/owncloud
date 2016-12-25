@@ -29,7 +29,7 @@ expect -c "\
    send \"1\n\";\
    expect \"receive?\";\
    sleep 1;\
-   send \"1\n\"
+   send \"1\n\";\
    expect \"configure?\";\
    sleep 1;\
    send \"2\n\";\
@@ -54,7 +54,7 @@ expect -c "\
    sleep 1;\
    send \"ehomevn\n\";\
    interact;
-"
+";
 # https://doc.owncloud.org/server/8.1/admin_manual/installation/source_installation.html#prerequisites
 RUN docker-php-ext-configure gd --with-png-dir=/usr --with-jpeg-dir=/usr \
 	&& docker-php-ext-configure ldap --with-libdir=lib/x86_64-linux-gnu/ \
