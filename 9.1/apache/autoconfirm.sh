@@ -35,6 +35,7 @@ expect -c '
    expect "enter root password:";
    sleep 1;
    send "ehomevn\n";
-   sleep 60;
+   expect "Processing triggers";
+   sleep 2;
    interact;
 ';
