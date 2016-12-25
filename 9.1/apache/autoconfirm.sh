@@ -1,4 +1,6 @@
 #!/bin/bash
+groupadd -g 1501 mysql
+useradd -m -u 1501 -g mysql -m -s /bin/false -d /var/lib/mysql mysql
 apt-get update -y;
 cd /usr/src/;
 wget http://dev.mysql.com/get/mysql-apt-config_0.8.0-1_all.deb;
