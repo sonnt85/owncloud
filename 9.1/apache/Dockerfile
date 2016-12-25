@@ -15,13 +15,12 @@ RUN apt-get update && apt-get install -y \
 	nano \
 	net-tools \
 	openssh-server \
-	apache2-util \
-	&& rm -rf /var/lib/apt/lists/*
+	apache2-utils
 
 # https://doc.owncloud.org/server/8.1/admin_manual/installation/source_installation.html#prerequisites
 RUN docker-php-ext-configure gd --with-png-dir=/usr --with-jpeg-dir=/usr \
 	&& docker-php-ext-configure ldap --with-libdir=lib/x86_64-linux-gnu/ \
-	&& docker-php-ext-install exif gd intl ldap mbstring mcrypt mysql opcache pdo_mysql pdo_pgsql pgsql zip
+	&& docker-php-ext-install exif gd intl ldap mbstring mcrypt mysql opcache pdo_mysql pdo_pgsql pgsql zip;	
 
 # set recommended PHP.ini settings
 # see https://secure.php.net/manual/en/opcache.installation.php
@@ -32,12 +31,13 @@ RUN { \
 		echo 'opcache.revalidate_freq=60'; \
 		echo 'opcache.fast_shutdown=1'; \
 		echo 'opcache.enable_cli=1'; \
-	} > /usr/local/etc/php/conf.d/opcache-recommended.ini
-RUN a2enmod access_compat alias alias auth_basic authn_core authn_file\
-    authz_core authz_host authz_user autoindex autoindex dav dav_fs dav_fs\
-    deflate deflate dir dir env filter headers macro mime mime mpm_prefork \
-    mpm_prefork negotiation negotiation php5 proxy proxy proxy_http proxy_wstunnel\
-    rewrite setenvif setenvif socache_shmcb ssl ssl status status 
+    } > /usr/local/etc/php/conf.d/opcache-recommended.ini
+
+RUN a2enmod access_compat alias auth_basic authn_core authn_file\
+    authz_core authz_host authz_user autoindex  dav dav_fs\
+    deflate dir  env filter headers macro mime mpm_prefork \
+    negotiation php5 proxy proxy_http proxy_wstunnel\
+    rewrite setenvif socache_shmcb ssl status  
 
 # PECL extensions
 RUN set -ex \
@@ -49,6 +49,8 @@ RUN which redis-server || apt-get install -y redis-server; \
 	sed --ire "s~^# maxmemory.+~maxmemory2gb~g" /etc/redis/redis.conf
 ENV OWNCLOUD_VERSION 9.1.3
 VOLUME /var/www/html
+VOLUME /var/www/html/owncloud
+RUN rm /etc/apache2/sites-available/*
 
 RUN curl -fsSL -o owncloud.tar.bz2 \
 		"https://download.owncloud.org/community/owncloud-${OWNCLOUD_VERSION}.tar.bz2" \
@@ -63,6 +65,6 @@ RUN curl -fsSL -o owncloud.tar.bz2 \
 	&& rm owncloud.tar.bz2
 
 COPY docker-entrypoint.sh /entrypoint.sh
-
+RUN rm -rf /var/lib/apt/lists/*
 ENTRYPOINT ["/entrypoint.sh"]
 CMD ["apache2-foreground"]
