@@ -17,7 +17,7 @@ RUN apt-get update && apt-get install -y \
 	openssh-server \
 	expect \
 	apache2-utils
-RUN /bin/bash -c "apt-get update -y;\
+RUN /bin/bash -c \"apt-get update -y;\
 cd /usr/src/; \
 wget http://dev.mysql.com/get/mysql-apt-config_0.8.0-1_all.deb;\
 apt-get install -y lsb-release;\
@@ -26,19 +26,19 @@ expect -c '\
    spawn dpkg -i mysql-apt-config_0.8.0-1_all.deb;\
    expect \"configure?\";\
    sleep 1;\
-   send \"1\\r\";\
+   send \"1\n\";\
    expect \"receive?\";\
    sleep 1;\
-   send \"1\\n\";\
+   send \"1\n\";\
    expect \"configure?\";\
    sleep 1;\
-   send \"2\\n\";\
+   send \"2\n\";\
    expect \"utilities\";\
    sleep 1;\
-   send \"1\\n\";\
+   send \"1\n\";\
    expect \"configure?\";\
    sleep 1;\
-   send \"4\\n\";\
+   send \"4\n\";\
    expect \"OK\";\
    sleep 1;\
    set timeout 600;\
@@ -49,12 +49,12 @@ expect -c '\
    set timeout 600;\
    expect \"Enter root password:\";\
    sleep 1;\
-   send \"ehomevn\\n\";\
+   send \"ehomevn\n\";\
    expect \"enter root password:\";\
    sleep 1;\
-   send \"ehomevn\\n\";\
+   send \"ehomevn\n\";\
    interact;
-';"
+';\"
 # https://doc.owncloud.org/server/8.1/admin_manual/installation/source_installation.html#prerequisites
 RUN docker-php-ext-configure gd --with-png-dir=/usr --with-jpeg-dir=/usr \
 	&& docker-php-ext-configure ldap --with-libdir=lib/x86_64-linux-gnu/ \
