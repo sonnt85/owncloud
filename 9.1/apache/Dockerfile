@@ -46,7 +46,7 @@ RUN set -ex \
 	&& pecl install redis-2.2.8 \
 	&& docker-php-ext-enable apcu memcached redis
 RUN which redis-server || apt-get install -y redis-server; \
-	sed --ire "s~^# maxmemory.+~maxmemory2gb~g" /etc/redis/redis.conf
+	sed -ire "s~^# maxmemory.+~maxmemory2gb~g" /etc/redis/redis.conf
 ENV OWNCLOUD_VERSION 9.1.3
 VOLUME /var/www/html
 VOLUME /var/www/html/owncloud
